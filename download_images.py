@@ -83,9 +83,16 @@ def main() -> None:
         default=Path(__file__).resolve().parent / "images",
     )
     parser.add_argument("--workers", type=int, default=8)
+    parser.add_argument(
+        "--source",
+        type=str,
+        default="ISIC",
+        help="Download only this source (default: ISIC, 907 images).",
+    )
     args = parser.parse_args()
 
     df = pd.read_csv(args.labels_csv)
+    df = df[df["source"].str.upper() == args.source.upper()]
     records = df[["image", "source"]].drop_duplicates("image")
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
